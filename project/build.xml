@@ -1,0 +1,42 @@
+<project name="project" default="default" basedir="C:/Program Files/Java/jdk-20.0.1/bin/project">
+  <property name="scr.dir" value="C:/Program Files/Java/jdk-20.0.1/bin/project/scr"/>
+  <property name="build.dir" value="C:/Program Files/Java/jdk-20.0.1/bin/project/build"/>
+  <property name="test.dir" value="C:/Program Files/Java/jdk-20.0.1/bin/project/test"/>
+  <property name="jar.dir" value="C:/Program Files/Java/jdk-20.0.1/bin/project/jar"/>
+  
+  <target name="compile">
+    <mkdir dir="${build.dir}"/>
+    <javac srcdir="${scr.dir}" destdir="${build.dir}" />
+  </target>
+  
+  <target name="test-compile" depends="compile">
+    <mkdir dir="${build.dir}/test-classes"/>
+    <javac srcdir="${test.dir}" destdir="${build.dir}/test-classes" classpath="${build.dir}" />
+  </target>
+
+  <target name="test" depends="test-compile">
+    <junit printsummary="on" fork="true">
+      <classpath>
+        <pathelement location="${build.dir}"/>
+        <pathelement location="${build.dir}/test-classes"/>
+      </classpath>
+      <formatter type="plain"/>
+      <batchtest todir="${build.dir}/test-classes">
+        <fileset dir="${test.dir}">
+          <include name="**/*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+  
+  <target name="jar" depends="compile">
+    <mkdir dir="${jar.dir}"/>
+    <jar destfile="${jar.dir}/example.jar" basedir="${build.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="Main"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="default" depends="jar"/>
+</project>
